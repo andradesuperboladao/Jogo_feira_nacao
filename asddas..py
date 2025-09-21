@@ -7,7 +7,7 @@ import random
 
 pygame.init()
 fim = False
-altura,largura = 480,640
+altura,largura = 600,800
 PRETO = (0, 0, 0)
 BRANCO = (255, 255, 255)
 VERMELHO = (255, 0, 0)
@@ -38,7 +38,7 @@ pygame.display.set_caption("Vários Burritos Girando")
 class Comida(pygame.sprite.Sprite):
     def __init__(self, imagem, posicao, tipo="normal"):
         super().__init__()
-        self.imagem_original = pygame.transform.scale(imagem, (200, 200))
+        self.imagem_original = pygame.transform.scale(imagem, (300, 300))
         self.imagem = self.imagem_original
         self.rect = self.imagem.get_rect(center=posicao)
         self.angulo = 0
@@ -46,6 +46,9 @@ class Comida(pygame.sprite.Sprite):
         self.y_alvo = posicao[1] # sorteado
         self.direcao = -1        # -1: subindo, 1: descendo
         self.tipo = tipo # "normal""bomba"
+
+        if imagem == bomba_imagem:
+            self.imagem_original = pygame.transform.scale(imagem, (100,100))
     
     def girar(self, angulo):
         self.angulo += angulo
@@ -84,7 +87,8 @@ class Comida(pygame.sprite.Sprite):
         elif self.direcao == 1:  # descendo
             if self.y_inicial < altura:
                 self.y_inicial += velocidade_y
-            if self.y_inicial == altura:
+            if self.y_inicial >= altura: #garante que não fique travado
+                self.y_inicial = altura
                 self.caiu()
 
 #----- CARREGAR IMAGENS ------
