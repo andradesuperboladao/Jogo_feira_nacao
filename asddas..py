@@ -47,8 +47,9 @@ class Comida(pygame.sprite.Sprite):
         self.direcao = -1        # -1: subindo, 1: descendo
         self.tipo = tipo # "normal""bomba"
 
-        if imagem == bomba_imagem:
-            self.imagem_original = pygame.transform.scale(imagem, (100,100))
+        if self.tipo == "bomba":
+            self.imagem_original = pygame.transform.scale(imagem, (100, 100))
+            self.rect = self.imagem_original.get_rect(center=posicao)
     
     def girar(self, angulo):
         self.angulo += angulo
@@ -260,21 +261,28 @@ while True:
                 burrito.girar(1)
                 tela.blit(burrito.imagem, (burrito.rect.centerx - burrito.imagem.get_width() // 2,
                                            burrito.y_inicial - burrito.imagem.get_height() // 2))
+                pygame.draw.rect(tela, (255, 0, 0), burrito.rect, 2)
+
             for pimenta in grupopimentas:
                 pimenta.atualizar()
                 pimenta.girar(1)
                 tela.blit(pimenta.imagem, (pimenta.rect.centerx - pimenta.imagem.get_width() // 2,
                                            pimenta.y_inicial - pimenta.imagem.get_height() // 2))
+                pygame.draw.rect(tela, (255, 0, 0), pimenta.rect, 2)
+
             for taco in grupotacos:
                 taco.atualizar()
                 taco.girar(1)
                 tela.blit(taco.imagem, (taco.rect.centerx - taco.imagem.get_width() // 2,
                                         taco.y_inicial - taco.imagem.get_height() // 2))
+                pygame.draw.rect(tela, (255, 0, 0), taco.rect, 2)
+
             for bomba in grupobombas:
                 bomba.atualizar()
                 bomba.girar(1)
                 tela.blit(bomba.imagem, (bomba.rect.centerx - bomba.imagem.get_width() // 2,
                                  bomba.y_inicial - bomba.imagem.get_height() // 2))
+                pygame.draw.rect(tela, (255, 0, 0), bomba.rect, 2)
 
     pygame.display.update()
     clock.tick(velocidade_clock)
