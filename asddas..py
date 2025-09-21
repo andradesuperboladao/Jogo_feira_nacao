@@ -3,7 +3,6 @@ from pygame.locals import *
 from sys import exit
 import random
 
-#alteração nova
 
 pygame.init()
 fim = False
@@ -13,6 +12,7 @@ BRANCO = (255, 255, 255)
 VERMELHO = (255, 0, 0)
 erros = 0
 placar = 0
+estado = "menu" # "menu" ou "jogo"
 pygame.font.init()
 fonte = pygame.font.SysFont('Sans-serif',40) 
 
@@ -24,11 +24,6 @@ boost_ativo = False
 tempo_boost = 0
 duracao_boost = 5000   # 5 segundos em ms
 velocidade_base = velocidade_y  # guarda a velocidade normal
-
-#ESTADO DO JOGO
-
-estado = "menu" # "menu" ou "jogo"
-
 
 #--- TELA ----
 tela = pygame.display.set_mode((largura, altura))
