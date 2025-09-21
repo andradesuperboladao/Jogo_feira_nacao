@@ -3,6 +3,7 @@ from pygame.locals import *
 from sys import exit
 import random
 
+#alteração nova
 
 pygame.init()
 fim = False
