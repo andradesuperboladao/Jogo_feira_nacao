@@ -12,9 +12,11 @@ BRANCO = (255, 255, 255)
 VERMELHO = (255, 0, 0)
 erros = 0
 placar = 0
+vidas_jogador = 3
 estado = "menu" # "menu" ou "jogo"
 pygame.font.init()
 fonte = pygame.font.SysFont('Sans-serif',40) 
+vidas_icone = pygame.image.load('images/white_lives.png')
 
 velocidade_y = 2
 velocidade_clock = 60
@@ -51,6 +53,7 @@ class Comida(pygame.sprite.Sprite):
         self.imagem = pygame.transform.rotate(self.imagem_original, self.angulo)
         self.rect = self.imagem.get_rect(center=(self.rect.centerx, self.y_inicial))
 
+
     def caiu(self):
         x = random.randint(50, largura - 50)
         y = random.randint(50, altura // 2)  # reaparece com alvo aleatório
@@ -71,8 +74,6 @@ class Comida(pygame.sprite.Sprite):
         self.y_inicial = altura
         self.direcao = -1  # volta a subir
 
-
-    
     def atualizar(self):
         # Movimento de sobe e desce
         if self.direcao == -1:  # subindo
@@ -86,9 +87,20 @@ class Comida(pygame.sprite.Sprite):
             if self.y_inicial >= altura: #garante que não fique travado
                 self.y_inicial = altura
                 self.caiu()
+    
+def desenhar_vidas(tela, x, y, vidas, image):
+        for i in range(vidas):
+            img = pygame.image.load(image)
+            img_rect = img.get_rect()
+            img_rect.x = int(x + 35 * 1) # o próximo ícone de vida vai ser 35 pixels depois do outro
+            img_rect.y = y
+            tela.blit(img, img_rect)
+
+def esconder_vida(x, y):
+    tela.blit(pygame.image.load("images/red_lives.png"), (x, y))
 
 #----- CARREGAR IMAGENS ------
-burrito_imagem = pygame.image.load("img/burrito.png")
+burrito_imagem = pygame.image.load('img/burrito.png')
 pimenta_imagem = pygame.image.load('img/pimenta.png')
 taco_imagem = pygame.image.load('img/taco.png')
 bomba_imagem = pygame.image.load("img/caveira_jogo.png")
@@ -99,7 +111,6 @@ grupotacos = pygame.sprite.Group()
 grupoburritos = pygame.sprite.Group()
 grupopimentas = pygame.sprite.Group()
 grupobombas = pygame.sprite.Group()
-
 
 #--- BURRITO
 for _ in range(1):  # 120 fica muito pesado, use menos para testar
@@ -219,12 +230,24 @@ while True:
                         taco.resetar()
                 for bomba in grupobombas:
                     if bomba.rect.collidepoint(pos_mouse):
-                        fim = True  # Acabou o jogo imediatamente
-                        erros = 10  # Para garantir que o fim seja mostrado
-                        bomba.resetar()
+                        vidas_jogador -= 1
+                        if player_lives == 0:
+                            esconder_vida(690, 15)
+                    elif player_lives == 1:
+                        esconder_vida(725, 15)
+                    elif player_lives == 2:
+                        esconder_vida(760, 15)
+                    # if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
+                    if player_lives < 0:
+                        tela.fill(VERMELHO)
+                        fim = True
+                        tela.blit(texto3, (0, 200))
 
+                        
     # --- DESENHO ---
     if estado == "menu":
+        player_lives = 3
+        desenhar_vidas(tela, 690, 5, player_lives, 'images/red_lives.png')
         botao_jogar = desenhar_menu()
         if event.type == MOUSEBUTTONDOWN:
             if botao_jogar.collidepoint(event.pos):
@@ -238,12 +261,7 @@ while True:
         tela.blit(texto, (450, 0))
         tela.blit(texto2, (0, 0))
 
-        if erros >= 10:
-            tela.fill(VERMELHO)
-            fim = True
-            tela.blit(texto3, (0, 200))
-            
-
+        
         if boost_ativo:
             tempo_atual = pygame.time.get_ticks()
             if tempo_atual - tempo_boost >= duracao_boost:
