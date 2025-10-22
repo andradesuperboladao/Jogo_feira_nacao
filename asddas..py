@@ -16,7 +16,8 @@ vidas_jogador = 3
 estado = "menu" # "menu" ou "jogo"
 pygame.font.init()
 fonte = pygame.font.SysFont('Sans-serif',40) 
-vidas_icone = pygame.image.load('images/white_lives.png')
+vidas_icone = pygame.image.load('img/white_lives.png')
+image = pygame.image.load('img/red_lives.png')
 
 velocidade_y = 2
 velocidade_clock = 60
@@ -88,16 +89,15 @@ class Comida(pygame.sprite.Sprite):
                 self.y_inicial = altura
                 self.caiu()
     
-def desenhar_vidas(tela, x, y, vidas, image):
-        for i in range(vidas):
-            img = pygame.image.load(image)
-            img_rect = img.get_rect()
-            img_rect.x = int(x + 35 * 1) # o próximo ícone de vida vai ser 35 pixels depois do outro
-            img_rect.y = y
-            tela.blit(img, img_rect)
+def desenhar_vidas(tela, x, y, vidas, imagem):
+    for i in range(vidas):
+        img = pygame.image.load(imagem)
+        img = pygame.transform.scale(img, (40, 40))  # tamanho do ícone
+        tela.blit(img, (x + i * 45, y))  # 45 = espaçamento horizontal
 
-def esconder_vida(x, y):
-    tela.blit(pygame.image.load("images/red_lives.png"), (x, y))
+
+def esconder_vida(largura, altura):
+    tela.blit(pygame.image.load("img/red_lives.png"), (altura, largura))
 
 #----- CARREGAR IMAGENS ------
 burrito_imagem = pygame.image.load('img/burrito.png')
@@ -231,35 +231,34 @@ while True:
                 for bomba in grupobombas:
                     if bomba.rect.collidepoint(pos_mouse):
                         vidas_jogador -= 1
-                        if player_lives == 0:
+                        if vidas_jogador == 0:
                             esconder_vida(690, 15)
-                    elif player_lives == 1:
-                        esconder_vida(725, 15)
-                    elif player_lives == 2:
-                        esconder_vida(760, 15)
+                        elif vidas_jogador == 1:
+                            esconder_vida(725, 15)
+                        elif vidas_jogador == 2:
+                            esconder_vida(760, 15)
                     # if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
-                    if player_lives < 0:
-                        tela.fill(VERMELHO)
-                        fim = True
-                        tela.blit(texto3, (0, 200))
+                        if vidas_jogador < 0:
+                            texto3 = print("Você perdeu newba hihieuihihiu")
+                            tela.fill(VERMELHO)
+                            fim = True
+                            tela.blit(texto3, (0, 200))
 
-                        
+
     # --- DESENHO ---
     if estado == "menu":
-        player_lives = 3
-        desenhar_vidas(tela, 690, 5, player_lives, 'images/red_lives.png')
         botao_jogar = desenhar_menu()
         if event.type == MOUSEBUTTONDOWN:
             if botao_jogar.collidepoint(event.pos):
                 estado = "jogo"
 
     elif estado == "jogo":
-        texto = fonte.render(f"erros {erros}", True, BRANCO)
-        texto2 = fonte.render(f"pontuação {placar}", True, BRANCO)
-        texto3 = fonte.render("PERDEU ('R' P/ RECOMEÇAR)", True, BRANCO)
         tela.fill(PRETO)
-        tela.blit(texto, (450, 0))
-        tela.blit(texto2, (0, 0))
+
+        # HUD (pontuação e vidas)
+        texto2 = fonte.render(f"Pontuação: {placar}", True, BRANCO)
+        tela.blit(texto2, (10, 10))
+        desenhar_vidas(tela, 650, 10, vidas_jogador, 'img/red_lives.png')
 
         
         if boost_ativo:
