@@ -12,10 +12,17 @@ BRANCO = (255, 255, 255)
 VERMELHO = (255, 0, 0)
 erros = 0
 placar = 0
+<<<<<<< HEAD
 estado = "menu" # "menu" ou "jogo"
 ranking = 0
+=======
+vidas_jogador = 3
+estado = "menu" # "menu" ou "jogo"
+>>>>>>> 67e2495931e40346e0fa5da7639e4812dcad70e0
 pygame.font.init()
 fonte = pygame.font.SysFont('Sans-serif',40) 
+vidas_icone = pygame.image.load('img/white_lives.png')
+image = pygame.image.load('img/red_lives.png')
 
 velocidade_y = 2
 
@@ -47,6 +54,7 @@ class Comida(pygame.sprite.Sprite):
         self.direcao = -1        # -1: subindo, 1: descendo
         self.tipo = tipo # "normal""bomba"
 
+<<<<<<< HEAD
         # Variáveis de controle do tempo de reset
         self.esperando_reset = False
         self.tempo_retorno = 0
@@ -55,12 +63,18 @@ class Comida(pygame.sprite.Sprite):
             self.imagem_original = pygame.transform.scale(imagem, (100, 100))
             self.rect = self.imagem_original.get_rect(center=posicao)
             self.mask = pygame.mask.from_surface(self.imagem_original) # máscara para colisão
+=======
+        if self.tipo == "bomba":
+            self.imagem_original = pygame.transform.scale(imagem, (100, 100))
+            self.rect = self.imagem_original.get_rect(center=posicao)
+>>>>>>> 67e2495931e40346e0fa5da7639e4812dcad70e0
     
     def girar(self, angulo):
         self.angulo += angulo
         self.imagem = pygame.transform.rotate(self.imagem_original, self.angulo)
         self.rect = self.imagem.get_rect(center=(self.rect.centerx, self.y_inicial))
         self.mask = pygame.mask.from_surface(self.imagem)  # atualizar máscara após rotação
+
 
     def caiu(self):
         # Ativa o tempo de espera antes de voltar
@@ -79,6 +93,7 @@ class Comida(pygame.sprite.Sprite):
         max_delay = 5000  # 5 segundos
         min_delay = 500   # 0,5 segundo
 
+<<<<<<< HEAD
         # diminui delay conforme placar
         if placar >= 100:
             max_delay = 2000
@@ -103,6 +118,8 @@ class Comida(pygame.sprite.Sprite):
             self.direcao = -1  # volta a subir  
             self.esperando_reset = False  # pronto pra próxima queda
 
+=======
+>>>>>>> 67e2495931e40346e0fa5da7639e4812dcad70e0
     def atualizar(self):
         # Se está esperando, não mostra o objeto
         if self.esperando_reset:
@@ -123,12 +140,22 @@ class Comida(pygame.sprite.Sprite):
             if self.y_inicial >= altura: #garante que não fique travado
                 self.y_inicial = altura
                 self.caiu()
+    
+def desenhar_vidas(tela, x, y, vidas, imagem):
+    for i in range(vidas):
+        img = pygame.image.load(imagem)
+        img = pygame.transform.scale(img, (40, 40))  # tamanho do ícone
+        tela.blit(img, (x + i * 45, y))  # 45 = espaçamento horizontal
+
+
+def esconder_vida(largura, altura):
+    tela.blit(pygame.image.load("img/red_lives.png"), (altura, largura))
 
 
 
 
 #----- CARREGAR IMAGENS ------
-burrito_imagem = pygame.image.load("img/burrito.png")
+burrito_imagem = pygame.image.load('img/burrito.png')
 pimenta_imagem = pygame.image.load('img/pimenta.png')
 taco_imagem = pygame.image.load('img/taco.png')
 bomba_imagem = pygame.image.load("img/caveira_jogo.png")
@@ -139,7 +166,6 @@ grupotacos = pygame.sprite.Group()
 grupoburritos = pygame.sprite.Group()
 grupopimentas = pygame.sprite.Group()
 grupobombas = pygame.sprite.Group()
-
 
 #--- BURRITO
 for _ in range(1):  # 120 fica muito pesado, use menos para testar
@@ -280,12 +306,29 @@ while True:
                             taco.resetar()
 
                 for bomba in grupobombas:
+<<<<<<< HEAD
                     offset = (pos_mouse[0] - bomba.rect.left, pos_mouse[1] - bomba.rect.top)
                     if 0 <= offset[0] < bomba.rect.width and 0 <= offset[1] < bomba.rect.height:
                         if bomba.mask.get_at(offset):
                             fim = True
                             erros = 10
                             bomba.resetar()
+=======
+                    if bomba.rect.collidepoint(pos_mouse):
+                        vidas_jogador -= 1
+                        if vidas_jogador == 0:
+                            esconder_vida(690, 15)
+                        elif vidas_jogador == 1:
+                            esconder_vida(725, 15)
+                        elif vidas_jogador == 2:
+                            esconder_vida(760, 15)
+                    # if the user clicks bombs for three time, GAME OVER message should be displayed and the window should be reset
+                        if vidas_jogador < 0:
+                            texto3 = print("Você perdeu newba hihieuihihiu")
+                            tela.fill(VERMELHO)
+                            fim = True
+                            tela.blit(texto3, (0, 200))
+>>>>>>> 67e2495931e40346e0fa5da7639e4812dcad70e0
 
 
     # --- DESENHO ---
@@ -296,14 +339,16 @@ while True:
                 estado = "jogo"
 
     elif estado == "jogo":
+<<<<<<< HEAD
         texto = fonte.render(f"erros {erros}", True, BRANCO)
         texto2 = fonte.render(f"pontuação {placar}", True, BRANCO)
         texto3 = fonte.render("PERDEU ('R' P/ RECOMEÇAR)", True, BRANCO)
         texto4 = fonte.render(f"Parabéns novo recorde atingido, o recorde agora é de {ranking}", True, BRANCO)
+=======
+>>>>>>> 67e2495931e40346e0fa5da7639e4812dcad70e0
         tela.fill(PRETO)
-        tela.blit(texto, (450, 0))
-        tela.blit(texto2, (0, 0))
 
+<<<<<<< HEAD
         if erros >= 10:
             tela.fill(VERMELHO)
             fim = True
@@ -311,7 +356,14 @@ while True:
             if placar > ranking:
                 ranking = placar
                 tela.blit(texto4,(150,150))
+=======
+        # HUD (pontuação e vidas)
+        texto2 = fonte.render(f"Pontuação: {placar}", True, BRANCO)
+        tela.blit(texto2, (10, 10))
+        desenhar_vidas(tela, 650, 10, vidas_jogador, 'img/red_lives.png')
+>>>>>>> 67e2495931e40346e0fa5da7639e4812dcad70e0
 
+        
         if boost_ativo:
             tempo_atual = pygame.time.get_ticks()
             if tempo_atual - tempo_boost >= duracao_boost:
@@ -324,27 +376,40 @@ while True:
                 burrito.girar(1)
                 tela.blit(burrito.imagem, (burrito.rect.centerx - burrito.imagem.get_width() // 2,
                                            burrito.y_inicial - burrito.imagem.get_height() // 2))
+<<<<<<< HEAD
 
+=======
+                pygame.draw.rect(tela, (255, 0, 0), burrito.rect, 2)
+>>>>>>> 67e2495931e40346e0fa5da7639e4812dcad70e0
 
             for pimenta in grupopimentas:
                 pimenta.atualizar()
                 pimenta.girar(1)
                 tela.blit(pimenta.imagem, (pimenta.rect.centerx - pimenta.imagem.get_width() // 2,
                                            pimenta.y_inicial - pimenta.imagem.get_height() // 2))
+<<<<<<< HEAD
 
+=======
+                pygame.draw.rect(tela, (255, 0, 0), pimenta.rect, 2)
+>>>>>>> 67e2495931e40346e0fa5da7639e4812dcad70e0
 
             for taco in grupotacos:
                 taco.atualizar()
                 taco.girar(1)
                 tela.blit(taco.imagem, (taco.rect.centerx - taco.imagem.get_width() // 2,
                                         taco.y_inicial - taco.imagem.get_height() // 2))
+<<<<<<< HEAD
 
+=======
+                pygame.draw.rect(tela, (255, 0, 0), taco.rect, 2)
+>>>>>>> 67e2495931e40346e0fa5da7639e4812dcad70e0
 
             for bomba in grupobombas:
                 bomba.atualizar()
                 bomba.girar(1)
                 tela.blit(bomba.imagem, (bomba.rect.centerx - bomba.imagem.get_width() // 2,
                                  bomba.y_inicial - bomba.imagem.get_height() // 2))
+                pygame.draw.rect(tela, (255, 0, 0), bomba.rect, 2)
 
     if placar >= 100:
         velocidade_clock = 90
