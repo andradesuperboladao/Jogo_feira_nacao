@@ -230,16 +230,21 @@ while rodando:
                 overlay = pygame.Surface((largura, altura), pygame.SRCALPHA)
                 pygame.draw.rect(overlay, (*cor, 80), overlay.get_rect(), 40)  # bordas vermelhas transparentes
                 tela.blit(overlay, (0, 0))
-            if canal_musica.get_sound() != musica_fundorapida:
-                canal_musica.stop()
-                canal_musica.play(musica_fundorapida, loops=-1)
+                if canal_musica.get_sound() != musica_fundorapida:
+                    canal_musica.stop()
+                    canal_musica.play(musica_fundorapida, loops=-1)
+            else:
+            # efeito terminou
+                mostrar_efeito_pimenta = False
+                # volta à música normal
+                if canal_musica.get_sound() != musica_fundo:
+                    canal_musica.stop()
+                    canal_musica.play(musica_fundo, loops=-1)
         else:
-        # Volta à música normal
+        # música normal (se não estiver tocando)
             if canal_musica.get_sound() != musica_fundo:
                 canal_musica.stop()
                 canal_musica.play(musica_fundo, loops=-1)
-            mostrar_efeito_pimenta = False
-       
 
         # --- AJUSTE DE VELOCIDADE ---
         velocidade_base = 1.0 + (placar // 100.0)  # a cada 100 pontos dobra a velocidade
